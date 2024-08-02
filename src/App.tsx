@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// src/App.tsx
+import React, { useEffect, useState } from "react";
+import DynamicMenu from "./components/DynamicMenu";
+import { IMenuItemJson } from "./types/IMenuItemJson";
 
-function App() {
+const App: React.FC = () => {
+  const [menus, setData] = useState<IMenuItemJson[]>([]);
+
+  const getData = () => {
+    fetch("./data/menus.json", {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (menus) {
+        //console.log(JSON.stringify(menus));
+        setData(menus);
+      });
+  };
+
+  useEffect(function () {
+    getData();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Dynamic Menu App</h1>
+      <DynamicMenu items={menus} />
     </div>
   );
-}
+};
 
 export default App;
